@@ -1,7 +1,11 @@
---Request Form Popup Addon
+--Form Popup Addon
 
 --Import settings
 local settings = {};
+settings.FormType = GetSetting("FormType");
+if settings.FormType:lower() == "request" then
+    settings.FormType = "Transaction";
+end
 settings.PopupField = GetSetting("PopupField");
 settings.CustomField = GetSetting("CustomField")
 settings.Message = GetSetting("Message");
@@ -10,6 +14,10 @@ settings.Message = GetSetting("Message");
 local interfaceMngr = nil;
 
 function Init()
+    -- Only run if on the configured FormType.
+    if not IsCorrectForm() then
+        return;
+    end
     --Create InterfaceManager object
     interfaceMngr = GetInterfaceManager();
 
@@ -18,14 +26,15 @@ function Init()
 
     --If the popup field is successfully found in the database, set the value of that field in the popupFieldValue variable
     local succeeded, err = pcall(function ()
-            --If the CustomField setting is checked, search for a Transaction custom field. If unchecked, search the Transactions table for the field
+
 			if settings.CustomField == true then
-				popupFieldValue = GetFieldValue("Transaction.CustomFields", settings.PopupField);
+				popupFieldValue = GetFieldValue(settings.FormType .. "." .. "CustomFields", settings.PopupField);
 
 			else
-				popupFieldValue = GetFieldValue("Transaction", settings.PopupField);
+				popupFieldValue = GetFieldValue(settings.FormType, settings.PopupField);
 
 			end
+
 		end);
     
     --If the popup field is not found in the database, display an error message prompting user to check the addon configuration settings    
@@ -40,6 +49,16 @@ function Init()
         interfaceMngr:ShowMessage(settings.Message, "Attention!");
     end
 
+end
+
+function IsCorrectForm()
+    if (settings.FormType == "Transaction" and GetFieldValue("Transaction", "TransactionNumber"))
+    or (settings.FormType == "User" and GetFieldValue("User", "Username") and not GetFieldValue("Transaction", "TransactionNumber"))
+    or (settings.FormType == "Activity" and GetFieldValue("Activity", "ID") and not GetFieldValue("Transaction", "TransactionNumber")) then
+        return true;
+    end
+
+    return false;
 end
 
 --Catch and log errors encountered by the addon

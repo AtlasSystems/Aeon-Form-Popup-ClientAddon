@@ -1,18 +1,23 @@
 <Configuration>
-	<Name>Request Form Popup</Name>
+	<Name>Form Popup</Name>
 	<Author>Atlas Systems, Inc.</Author>
-	<Version>1.0.0</Version>
+	<Version>2.0.0</Version>
 	<Active>true</Active>
 
-	<Description>Displays a popup box with a configurable message when a request is opened that contains a value in the specified field. This field must be either a default field in the Transactions database table or a Transaction-type custom field.</Description>
+	<Description>Displays a popup box with a configurable message when a request, user, or activity is opened that contains a value in the specified field.</Description>
 
 	<Forms>
 		<Form>FormRequest</Form>
+		<Form>FormUserInfo</Form>
+		<Form>FormActivity</Form>
 	</Forms>	
 
 	<Settings>
+        <Setting name="FormType" value="Request" type="string">
+			<Description>The type of form the field that will trigger the popup to display is on. Value can be Request, User, or Activity.</Description>
+		</Setting>
 		<Setting name="PopupField" value="" type="string">
-			<Description>The field that will trigger the popup to display if it contains a value. Must be a default field in the Transactions table or a Transaction-type custom field. If a custom field is selected, enter the short name for the field as defined in the Customization Manager's CustomFieldDefinitions table.</Description>
+			<Description>The field that will trigger the popup to display if it contains a value. If a custom field is selected, enter the short name for the field as defined in the Customization Manager's CustomFieldDefinitions table.</Description>
 		</Setting>
         <Setting name="CustomField" value="false" type="Boolean">
 			<Description>Must be checked if the PopupField is a custom field.</Description>
@@ -23,6 +28,6 @@
 	</Settings>
 
 	<Files>
-		<File>RequestFormPopup.lua</File>
+		<File>FormPopup.lua</File>
 	</Files>
 </Configuration>
